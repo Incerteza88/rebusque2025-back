@@ -6,6 +6,7 @@ from src.models import db
 from src.routes import main # Importa el Blueprint 'main'
 from src.admin import setup_admin
 from flask_migrate import Migrate
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Crea la instancia de la aplicación Flask
 app = Flask(__name__, template_folder='src/templates')
@@ -18,7 +19,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app)
-
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
 # Registra los Blueprints
 app.register_blueprint(main)
 setup_admin(app)
