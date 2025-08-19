@@ -50,3 +50,12 @@ rebusque2025-back/
    ```
 
 ```
+Para que el panel de administración (/admin) redireccione correctamente en GitHub Codespaces, debes copiar la URL completa del puerto que se muestra en tu navegador y agregarla al archivo .env.
+
+Abre tu proyecto en GitHub Codespaces y levanta el servidor.
+
+Copia la URL de la barra de direcciones de tu navegador. La URL debería ser similar a esta: https://crispy-robot-q74qgr6pvpx397px-3001.app.github.dev
+
+Abre el archivo .env en la raíz de tu proyecto.
+
+Pega la URL en la variable BASE_URL.
