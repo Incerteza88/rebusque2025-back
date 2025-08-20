@@ -21,6 +21,7 @@ class User(db.Model):
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
     photo_url: Mapped[str] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
     services: Mapped[list["Service"]] = relationship(back_populates="provider")
     contracts_as_client: Mapped[list["Contract"]] = relationship(back_populates="client", foreign_keys="Contract.client_id")
     contracts_as_provider: Mapped[list["Contract"]] = relationship(back_populates="provider", foreign_keys="Contract.provider_id")
@@ -38,8 +39,10 @@ class Service(db.Model):
     title: Mapped[str] = mapped_column(String(150), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
+
     provider_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
+
     provider: Mapped["User"] = relationship(back_populates="services")
     category: Mapped["Category"] = relationship(back_populates="services")
     contracts: Mapped[list["Contract"]] = relationship(back_populates="service")
@@ -49,9 +52,11 @@ class Contract(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     start_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     status: Mapped[str] = mapped_column(String(50), default="pendiente")
+
     client_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     provider_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     service_id: Mapped[int] = mapped_column(ForeignKey("services.id"), nullable=False)
+
     client: Mapped["User"] = relationship(back_populates="contracts_as_client", foreign_keys=[client_id])
     provider: Mapped["User"] = relationship(back_populates="contracts_as_provider", foreign_keys=[provider_id])
     service: Mapped["Service"] = relationship(back_populates="contracts")
@@ -63,9 +68,11 @@ class Review(db.Model):
     rating: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5 estrellas
     comment: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
     contract_id: Mapped[int] = mapped_column(ForeignKey("contracts.id"), nullable=False)
     author_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     recipient_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+
     contract: Mapped["Contract"] = relationship(back_populates="reviews")
     author: Mapped["User"] = relationship(foreign_keys=[author_id])
     recipient: Mapped["User"] = relationship(foreign_keys=[recipient_id])
