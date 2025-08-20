@@ -16,3 +16,5 @@ Pipfile.lock
 
 # Archivos de VSCode
 .vscode/
+
+/migrations/
