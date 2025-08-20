@@ -12,7 +12,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 app = Flask(__name__, template_folder='src/templates')
 
 # Configuración de la aplicación
-app.config['SQLALCHEMY_DATABASE_URI'] ="sqlite:///rebusque2025.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # Inicializa las extensiones con la aplicación
