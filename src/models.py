@@ -9,8 +9,8 @@ from enum import Enum as PyEnum
 db = SQLAlchemy()
  # 1 ====TABLA QUE GUARDA EL ROL DEL USUARIO
 class UserRole(PyEnum):
-        CLIENTE = "cliente"
-        PROVEEDOR = "proveedor"
+    CLIENTE = "cliente"
+    PROVEEDOR = "proveedor"
  # 1.1 ====TABLA USER
 class User(db.Model):
     __tablename__ = 'user'
