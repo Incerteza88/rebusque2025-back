@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy import String, Integer, Boolean, ForeignKey, Text, DateTime, Float, Enum
 from datetime import datetime
 from enum import Enum as PyEnum
@@ -15,7 +15,7 @@ class UserRole(PyEnum):
 class User(db.Model):
     __tablename__ = 'user'
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    name: Mapped[str] = mapped_column(String(80), nullable=False, unique=True)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
@@ -25,6 +25,12 @@ class User(db.Model):
     services: Mapped[list["Service"]] = relationship(back_populates="provider")
     contracts_as_client: Mapped[list["Contract"]] = relationship(back_populates="client", foreign_keys="Contract.client_id")
     contracts_as_provider: Mapped[list["Contract"]] = relationship(back_populates="provider", foreign_keys="Contract.provider_id")
+
+
+    def __repr__(self):
+        return f"{self.name} ({self.role.value})"
+
+
  # 2 ==== TABLA CATEGORIA DEL SERVICIO
 class Category(db.Model):
     __tablename__ = "categories"
@@ -32,6 +38,8 @@ class Category(db.Model):
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
      #RELATIONSHIPPS
     services: Mapped[list["Service"]] = relationship(back_populates="category")
+
+
  # 3 ====TABLA SERVICIOS
 class Service(db.Model):
     __tablename__ = "services"
@@ -46,6 +54,11 @@ class Service(db.Model):
     provider: Mapped["User"] = relationship(back_populates="services")
     category: Mapped["Category"] = relationship(back_populates="services")
     contracts: Mapped[list["Contract"]] = relationship(back_populates="service")
+
+
+    def __repr__(self):
+        return f"{self.title} - {self.provider.name} (${self.price})"
+    
  # 4 ====TABLA CONTRATACIONES(antes booking)
 class Contract(db.Model):
     __tablename__ = "contracts"
@@ -61,6 +74,14 @@ class Contract(db.Model):
     provider: Mapped["User"] = relationship(back_populates="contracts_as_provider", foreign_keys=[provider_id])
     service: Mapped["Service"] = relationship(back_populates="contracts")
     reviews: Mapped[list["Review"]] = relationship(back_populates="contract")
+
+
+
+    def __repr__(self):
+        return f"Contrato #{self.id} - {self.client.name} ↔ {self.provider.name} ({self.status})"
+
+
+
  # 5 ====TABLA RESEÑAS
 class Review(db.Model):
     __tablename__ = "reviews"
@@ -80,6 +101,20 @@ class Review(db.Model):
 
 
 
+    def __repr__(self):
+        return f"Reseña #{self.id} - {self.author.name} → {self.recipient.name} ({"⭐" * self.rating})" #prueba de multiplicar las estrellas para que se vea la calificacion total
+
+
+    @validates("rating")
+    def validate_rating(self, key, value):
+        value = int(value)
+        if value < 1 or value > 5:
+            raise ValueError("El rating debe estar entre 1 y 5")
+        return value
+
+
+
+####emoji de wpp:⭐########
 
 
 
