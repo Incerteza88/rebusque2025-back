@@ -17,5 +17,4 @@ Pipfile.lock
 # Archivos de VSCode
 .vscode/
 
-# Ignorar la carpeta de migraciones de Flask-Migrate
 /migrations/
