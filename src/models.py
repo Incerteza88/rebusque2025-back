@@ -1,9 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< HEAD
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-=======
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
->>>>>>> a8fb249b2fb67eea800e53f4307ca4434fb662b0
 from sqlalchemy import String, Integer, Boolean, ForeignKey, Text, DateTime, Float, Enum
 from datetime import datetime
 from enum import Enum as PyEnum
